@@ -13,6 +13,19 @@ function getNear(points, to, distance) {
   return result;
 }
 
+function slow_getNear(points, to, distance) {
+  var result = [];
+  var distance2 = Math.pow(distance, 2);
+  for (var i = 0; i < points.length; i += 2) {
+    if (Math.pow(to[0] - points[i], 2) + Math.pow(to[1] - points[i+1], 2) <= distance2) {
+      result.push(points[i]);
+      result.push(points[i+1]);
+    }
+  }
+
+  return result;
+}
+
 function near(points, to, distance) {
   var open = {},
     closed = {};

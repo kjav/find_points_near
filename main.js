@@ -1,7 +1,9 @@
 function getNear(points, to, distance) {
   var result = [];
   var distance2 = Math.pow(distance, 2);
-  for (var i = 0; i < points.length; i += 2) {
+  var low_index = 2*binarySearch(i => [points[2*i], points[2*i+1]], [to[0] - distance, to[1] - distance], compare, 0, points.length / 2);
+  var high_index = points.length - 2*binarySearch(i => [points[points.length - 2*i - 1], points[points.length - 2*i - 1]], [to[0] + distance, to[1] + distance], compare_neg, 0, points.length / 2);
+  for (var i = low_index; i <= high_index; i += 2) {
     if (Math.pow(to[0] - points[i], 2) + Math.pow(to[1] - points[i+1], 2) <= distance2) {
       result.push(points[i]);
       result.push(points[i+1]);
@@ -48,6 +50,59 @@ function near(points, to, distance) {
   }
 
   return result;
+}
+
+// Returns the index of array with value target, or the index where it would be inserted.
+function binarySearch(get, target, compare, low_index, high_index) {
+  var index = 0|((high_index + low_index) / 2);
+
+  while ((high_index - low_index > 1)) {
+    if (compare(get(index), target) > 0) {
+      high_index = index;
+    } else {
+      low_index = index;
+    }
+
+    index = 0|((high_index + low_index) / 2);
+  }
+
+  if (compare(get(index), target) < 0) {
+    index++;
+  }
+
+  return index;
+}
+
+function compare(a, b) {
+  if (a[0] > b[0]) {
+    return 1;
+  } else if (b[0] > a[0]) {
+    return -1;
+  } else {
+    if (a[1] > b[1]) {
+      return 1;
+    } else if (b[1] > a[1]) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+}
+
+function compare_neg(a, b) {
+  if (a[0] < b[0]) {
+    return 1;
+  } else if (b[0] < a[0]) {
+    return -1;
+  } else {
+    if (a[1] < b[1]) {
+      return 1;
+    } else if (b[1] < a[1]) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
 }
 
 var tests = 0, fails = 0;
